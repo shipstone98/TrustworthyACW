@@ -16,6 +16,7 @@
         <tr>
             <th>Name</th>
             <th>Description</th>
+            <th></th>
             <th>Price</th>
             <th></th>
         </tr>
@@ -27,8 +28,9 @@
             <tr>
                 <td>@Html.DisplayFor(model => product.Name)</td>
                 <td>@Html.DisplayFor(model => product.Description)</td>
-                <td>@Html.DisplayFor(model => product.Price)</td>
                 <td><img src="@product.ImageUri" width="100" height="85" /></td>
+                <td>@Html.DisplayFor(model => product.Price)</td>
+                <td><a class="text-dark" asp-area="" asp-page="/AddToCart" asp-route-productId="@product.ID" asp-route-redir="Products">Add to cart</a></td>
             </tr>
         }
     </tbody>
