@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CateringSystem.PayPal
@@ -120,6 +121,49 @@ namespace CateringSystem.PayPal
             }
 
             return null;
+        }
+
+        public async Task OrderAsync(IEnumerable<CartItem> cartItems)
+        {
+            if (cartItems is null)
+            {
+                throw new ArgumentNullException(nameof (cartItems));
+            }
+
+            int count = 0;
+
+            foreach (CartItem cartItem in cartItems)
+            {
+                if (!(cartItem is null))
+                {
+                    ++ count;
+                }
+            }
+
+            if (count == 0)
+            {
+                throw new ArgumentException($"{nameof (cartItems)} contains no non-null items.");
+            }
+
+            this.CheckState(true);
+            PayPalOrder order = new PayPalOrder(PayPalOrderIntent.Capture, cartItems);
+            String orderJson = null;
+            Thread serializeThread = new Thread(() => orderJson = order.Serialize());
+            serializeThread.Start();
+
+            HttpRequestMessage requestMessage = new HttpRequestMessage(
+                HttpMethod.Post,
+                
+                this.IsSandbox ?
+                    "https://api-m.sandbox.paypal.com/v2/checkout/orders" :
+                    throw new NotImplementedException()
+            );
+
+            requestMessage.Headers.Add("Authorization", "Bearer " + this.AccessToken);
+            serializeThread.Join();
+            requestMessage.Content = new StringContent(orderJson, Encoding.Default, "application/json");
+            HttpResponseMessage responseMessage = await this._Client.SendAsync(requestMessage);
+            String response = await responseMessage.Content.ReadAsStringAsync();
         }
     }
 }
