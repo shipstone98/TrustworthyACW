@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,19 @@ namespace CateringSystemWeb
                 UseSqlServer(this.Configuration.GetConnectionString("Sandbox")
             ));
 
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+#if DEBUG
+                options.IdleTimeout = TimeSpan.FromSeconds(60);
+#else
+                options.IdleTimeout = TimeSpan.FromMinutes(15);
+#endif
+
+                options.Cookie.IsEssential = true;
+            });
+
             services.AddRazorPages();
         }
 
@@ -47,6 +61,7 @@ namespace CateringSystemWeb
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
