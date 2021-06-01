@@ -1,10 +1,31 @@
 ﻿@page
+@using CateringSystem
+
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Categories</h1>
+    <p>Select a category below to get started. Alternatively, click <a class="text-dark" asp-area="" asp-page="/Products">here</a> to view a list of available products.</p>
 </div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (Category category in this.Model.Context.Categories)
+        {
+            <tr>
+                <td><a class="text-dark" asp-area="" asp-page="/Category" asp-route-id="@category.ID">@Html.DisplayFor(model => category.Name)</a></td>
+                <td>@Html.DisplayFor(model => category.Description)</td>
+            </tr>
+        }
+    </tbody>
+</table>
