@@ -9,3 +9,7 @@ In order to setup the database, you must ensure SQL Server LocalDB is installed.
 ``` dotnet ef database update ```
 
 You may then use the provided SQL queries to add seed data to the database; alternatively, you may populate the database yourself.
+
+## Notes
+
+Postman scripts are provided to demonstrate PayPal API endpoints that are exposed by the web app.
