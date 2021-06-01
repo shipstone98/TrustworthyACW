@@ -1,0 +1,52 @@
+﻿@page
+@using CateringSystem
+
+@model CartModel
+@{
+    ViewData["Title"] = "Shopping cart";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Shopping Cart</h1>
+    @if (this.Model.ItemCount == 0)
+    {
+        <p>The shopping cart is empty.</p>
+    }
+
+    else
+    {
+        <p>Below is your shopping cart.</p>
+    }
+</div>
+
+@if (this.Model.ItemCount > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th></th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (CartItem cartItem in this.Model.Items)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(model => cartItem.Product.Name)</td>
+                    <td>@Html.DisplayFor(model => cartItem.Product.Description)</td>
+                    <td><img src="@cartItem.Product.ImageUri" width="100" height="85" /></td>
+                    <td>@Html.DisplayFor(model => cartItem.Product.Price)</td>
+                    <td>@Html.DisplayFor(model => cartItem.Quantity)</td>
+                    <td>£@this.Model.Totals[cartItem.ProductId]</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p>Total price to pay: £@this.Model.Total</p>
+}
