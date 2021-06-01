@@ -1,0 +1,100 @@
+{
+	"info": {
+		"_postman_id": "cc72d9d2-7885-43f9-b4ad-dbbdfb5b121a",
+		"name": "PayPal Sandbox",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Access Token - Sandbox",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{Sandbox Secret}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{Sandbox Client ID}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://api-m.sandbox.paypal.com/v1/oauth2/token",
+					"protocol": "https",
+					"host": [
+						"api-m",
+						"sandbox",
+						"paypal",
+						"com"
+					],
+					"path": [
+						"v1",
+						"oauth2",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Order - Sandbox",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{Access Token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"intent\": \"CAPTURE\",\r\n    \"purchase_units\": [\r\n        {\r\n            \"items\": [\r\n                {\r\n                    \"name\": \"Pizza\",\r\n                    \"unit_amount\": {\r\n                        \"currency_code\": \"GBP\",\r\n                        \"value\": \"3\"\r\n                    },\r\n                    \"quantity\": \"4\"\r\n                },\r\n                {\r\n                    \"name\": \"Burger\",\r\n                    \"unit_amount\": {\r\n                        \"currency_code\": \"GBP\",\r\n                        \"value\": \"2\"\r\n                    },\r\n                    \"quantity\": \"4\"\r\n                }\r\n            ],\r\n            \"amount\": {\r\n                \"currency_code\": \"GBP\",\r\n                \"value\": \"20\",\r\n                \"breakdown\": {\r\n                    \"item_total\": {\r\n                        \"currency_code\": \"GBP\",\r\n                        \"value\": \"20\"\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api-m.sandbox.paypal.com/v2/checkout/orders",
+					"protocol": "https",
+					"host": [
+						"api-m",
+						"sandbox",
+						"paypal",
+						"com"
+					],
+					"path": [
+						"v2",
+						"checkout",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

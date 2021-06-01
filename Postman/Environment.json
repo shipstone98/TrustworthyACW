@@ -1,0 +1,24 @@
+{
+	"id": "30e7de57-8da2-479d-8380-ded9258474dc",
+	"name": "PayPal Sandbox",
+	"values": [
+		{
+			"key": "Sandbox Secret",
+			"value": "EOzxJPOVv-mdfoJD4wGgoITfpei47V9etOfR5WX3gZa1oKnYa5Uv_w2JY_HDIGd04y-ISBL8O_aHmCcr",
+			"enabled": true
+		},
+		{
+			"key": "Sandbox Client ID",
+			"value": "AW23DUoX2Yf-C4KXuJ_0wuwWAx3HQLhTyHbwAGtmexnrcT6qSsfPkLjs0SFHXQIYAldjRLNKRmzKCjhO",
+			"enabled": true
+		},
+		{
+			"key": "Sandbox Access Token",
+			"value": "A21AAKYtxLYoxtzfPtx4dn3fZIqXbo4jp5c4y9oxtv63Ea194iGMisvcISPE7T5WwFHywBijirSqfH4Sq3lP5nagGBscUiySQ",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2021-06-01T22:29:27.977Z",
+	"_postman_exported_using": "Postman/8.5.1"
+}
