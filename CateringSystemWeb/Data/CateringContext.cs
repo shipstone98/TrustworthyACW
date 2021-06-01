@@ -6,6 +6,7 @@ namespace CateringSystemWeb.Data
 {
     public class CateringContext : DbContext
     {
+        public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
 
