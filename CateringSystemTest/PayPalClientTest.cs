@@ -60,8 +60,9 @@ namespace CateringSystemTest
             }
 
             tokenTask.Wait();
-            Task task = Task.Run(() => this._Client.OrderAsync(cartItems));
+            Task<PayPalOrder> task = Task.Run<PayPalOrder>(() => this._Client.OrderAsync(cartItems));
             task.Wait();
+            Assert.IsNotNull(task.Result);
         }
     }
 }

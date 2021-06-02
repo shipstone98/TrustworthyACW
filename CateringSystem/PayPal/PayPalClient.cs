@@ -125,7 +125,7 @@ namespace CateringSystem.PayPal
             return null;
         }
 
-        public async Task OrderAsync(IEnumerable<CartItem> cartItems)
+        public async Task<PayPalOrder> OrderAsync(IEnumerable<CartItem> cartItems)
         {
             if (cartItems is null)
             {
@@ -165,7 +165,13 @@ namespace CateringSystem.PayPal
             serializeThread.Join();
             requestMessage.Content = new StringContent(orderJson, Encoding.Default, "application/json");
             HttpResponseMessage responseMessage = await this._Client.SendAsync(requestMessage);
-            String response = await responseMessage.Content.ReadAsStringAsync();
+
+            if (responseMessage.StatusCode != HttpStatusCode.Created)
+            {
+                throw new PayPalException(PayPalException._OrderCreationError, this.IsSandbox);
+            }
+
+            return PayPalOrder.Deserialize(await responseMessage.Content.ReadAsStringAsync());
         }
     }
 }
