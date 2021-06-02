@@ -8,8 +8,8 @@ namespace CateringSystem
     public class Cart
     {
         private readonly ICartHandler _Handler;
-        private readonly String _ID;
 
+        public String ID { get; }
         public IEnumerable<CartItem> Items => this._Handler.Items;
 
         public Cart(ICartHandler handler)
@@ -25,7 +25,7 @@ namespace CateringSystem
             }
 
             this._Handler = handler;
-            this._ID = handler.ID;
+            this.ID = handler.ID;
         }
 
         public async Task AddAsync(int productId)
@@ -37,7 +37,7 @@ namespace CateringSystem
             {
                 cartItem = new CartItem
                 {
-                    CartId = this._ID,
+                    CartId = this.ID,
                     Product = product,
                     Quantity = 1
                 };
