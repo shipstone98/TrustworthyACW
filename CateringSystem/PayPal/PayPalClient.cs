@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
+using CateringSystem.Logging;
 using CateringSystem.PayPal.Internals;
 
 namespace CateringSystem.PayPal
@@ -20,6 +21,7 @@ namespace CateringSystem.PayPal
 
         public String AccessToken { get; private set; }
         public bool IsSandbox { get; }
+        public ILogger Logger { get; set; }
 
         public PayPalClient(PayPalOptions options)
         {
@@ -99,13 +101,15 @@ namespace CateringSystem.PayPal
             );
 
             HttpResponseMessage responseMessage = await this._Client.SendAsync(requestMessage);
+            String response = await responseMessage.Content.ReadAsStringAsync();
+            this.TryLog(await requestMessage.Content.ReadAsStringAsync(), responseMessage.StatusCode, response.Length);
 
             if (responseMessage.StatusCode != HttpStatusCode.OK)
             {
                 throw new PayPalException(PayPalException._GetTokenError, this.IsSandbox);
             }
 
-            this.AccessToken = this.GetRootElement(await responseMessage.Content.ReadAsStringAsync(), "access_token");
+            this.AccessToken = this.GetRootElement(response, "access_token");
             return this.AccessToken ?? throw new PayPalException(PayPalException._GetTokenError, this.IsSandbox);
         }
 
@@ -165,13 +169,26 @@ namespace CateringSystem.PayPal
             serializeThread.Join();
             requestMessage.Content = new StringContent(orderJson, Encoding.Default, "application/json");
             HttpResponseMessage responseMessage = await this._Client.SendAsync(requestMessage);
+            String response = await responseMessage.Content.ReadAsStringAsync();
+            this.TryLog(await requestMessage.Content.ReadAsStringAsync(), responseMessage.StatusCode, response.Length);
 
             if (responseMessage.StatusCode != HttpStatusCode.Created)
             {
                 throw new PayPalException(PayPalException._OrderCreationError, this.IsSandbox);
             }
 
-            return PayPalOrder.Deserialize(await responseMessage.Content.ReadAsStringAsync());
+            return PayPalOrder.Deserialize(response);
+        }
+
+        private void TryLog(String request, HttpStatusCode status, int bytes)
+        {
+            try
+            {
+                Log log = new Log(this.Logger.Host, this.Logger.Identifier, this.Logger.AuthorizedUser, request, status, bytes);
+                this.Logger.Log(log);
+            }
+
+            catch (NullReferenceException) { }
         }
     }
 }
