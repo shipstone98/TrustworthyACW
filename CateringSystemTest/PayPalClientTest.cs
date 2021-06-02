@@ -20,6 +20,9 @@ namespace CateringSystemTest
 
         static PayPalClientTest() => PayPalClientTest._SandboxOptions = new PayPalOptions(true, PayPalClientTest._ClientId, PayPalClientTest._Secret);
 
+        [TestCleanup]
+        public void Cleanup() => this._Client.Dispose();
+
         [TestInitialize]
         public void Initialize() => this._Client = new PayPalClient(PayPalClientTest._SandboxOptions);
 
