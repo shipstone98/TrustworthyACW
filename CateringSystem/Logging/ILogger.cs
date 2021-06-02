@@ -2,7 +2,7 @@ using System;
 
 namespace CateringSystem.Logging
 {
-    public interface ILogger
+    public interface ILogger : IDisposable
     {
         String AuthorizedUser { get; }
         String Host { get; }

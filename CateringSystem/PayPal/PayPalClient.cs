@@ -71,6 +71,7 @@ namespace CateringSystem.PayPal
             if (disposing)
             {
                 this._Client.Dispose();
+                this.Logger?.Dispose();
             }
 
             this._IsDisposed = true;
