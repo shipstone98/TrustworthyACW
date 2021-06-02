@@ -132,7 +132,7 @@ namespace CateringSystem.PayPal
                 }
             }
 
-            catch (JsonException ex)
+            catch (JsonException)
             {
                 throw new FormatException();
             }
