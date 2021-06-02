@@ -34,7 +34,7 @@
         </thead>
 
         <tbody>
-            @foreach (CartItem cartItem in this.Model.Items)
+            @foreach (CartItem cartItem in this.Model.Cart.Items)
             {
                 <tr>
                     <td>@Html.DisplayFor(model => cartItem.Product.Name)</td>

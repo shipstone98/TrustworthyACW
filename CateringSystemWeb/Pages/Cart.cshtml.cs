@@ -11,6 +11,7 @@ namespace CateringSystemWeb.Pages
     {
         private readonly CateringContext _Context;
 
+        public Cart Cart { get; private set; }
         public int ItemCount { get; private set; }
         public IEnumerable<CartItem> Items { get; private set; }
         public Decimal Total { get; private set; }
@@ -20,12 +21,11 @@ namespace CateringSystemWeb.Pages
 
         public void OnGet()
         {
-            Cart cart = new Cart(new CartHandler(this._Context, this.HttpContext));
-            this.Items = cart.Items;
+            this.Cart = new Cart(new CartHandler(this._Context, this.HttpContext));
             this.Total = this.ItemCount = 0;
             Dictionary<int, Decimal> totals = new Dictionary<int, Decimal>();
 
-            foreach (CartItem item in this.Items)
+            foreach (CartItem item in this.Cart.Items)
             {
                 ++ this.ItemCount;
                 Decimal total = item.Product.Price * item.Quantity;
