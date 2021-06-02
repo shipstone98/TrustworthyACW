@@ -4,14 +4,14 @@ using System.IO;
 using System.Text;
 using System.Text.Json;
 
-namespace CateringSystem.PayPal
+namespace CateringSystem.PayPal.Internals
 {
-    internal class PayPalOrder
+    internal class InternalOrder
     {
-        private readonly PayPalOrderIntent _Intent;
+        private readonly InternalOrderIntent _Intent;
         private readonly IEnumerable<CartItem> _Items;
 
-        internal PayPalOrder(PayPalOrderIntent intent, IEnumerable<CartItem> items)
+        internal InternalOrder(InternalOrderIntent intent, IEnumerable<CartItem> items)
         {
             this._Intent = intent;
             this._Items = items;

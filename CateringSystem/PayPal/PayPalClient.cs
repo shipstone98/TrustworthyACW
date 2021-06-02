@@ -8,6 +8,8 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
+using CateringSystem.PayPal.Internals;
+
 namespace CateringSystem.PayPal
 {
     public class PayPalClient : IDisposable
@@ -146,7 +148,7 @@ namespace CateringSystem.PayPal
             }
 
             this.CheckState(true);
-            PayPalOrder order = new PayPalOrder(PayPalOrderIntent.Capture, cartItems);
+            InternalOrder order = new InternalOrder(InternalOrderIntent.Capture, cartItems);
             String orderJson = null;
             Thread serializeThread = new Thread(() => orderJson = order.Serialize());
             serializeThread.Start();
