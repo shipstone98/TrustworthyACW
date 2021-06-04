@@ -12,6 +12,7 @@ namespace CateringSystem.PayPal
     {
         internal readonly ICollection<InternalOrderLink> _Links;
 
+        public String ApproveLink { get; private set; }
         public String ID { get; set; }
 
         private PayPalOrder(String id)
@@ -67,6 +68,11 @@ namespace CateringSystem.PayPal
                                         }
 
                                         href = linkProperty.Value.GetString();
+
+                                        if (!(rel is null) && rel.Equals("approve"))
+                                        {
+                                            order.ApproveLink = href;
+                                        }
                                     }
 
                                     else if (linkProperty.NameEquals("rel"))
@@ -76,7 +82,10 @@ namespace CateringSystem.PayPal
                                             throw new FormatException();
                                         }
 
-                                        rel = linkProperty.Value.GetString();
+                                        if (!(href is null) && (rel = linkProperty.Value.GetString()).Equals("approve"))
+                                        {
+                                            order.ApproveLink = href;
+                                        }
                                     }
 
                                     else if (linkProperty.NameEquals("method"))
@@ -133,6 +142,11 @@ namespace CateringSystem.PayPal
             }
 
             catch (JsonException)
+            {
+                throw new FormatException();
+            }
+
+            if (order.ApproveLink is null)
             {
                 throw new FormatException();
             }
