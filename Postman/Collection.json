@@ -95,6 +95,17 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Approve Order - Sandbox",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
 		}
 	]
 }
