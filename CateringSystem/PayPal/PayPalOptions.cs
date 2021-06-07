@@ -12,8 +12,8 @@ namespace CateringSystem.PayPal
 
         static PayPalOptions() => PayPalOptions.Default = new PayPalOptions(
             true,
-            "AW23DUoX2Yf-C4KXuJ_0wuwWAx3HQLhTyHbwAGtmexnrcT6qSsfPkLjs0SFHXQIYAldjRLNKRmzKCjhO",
-            "EOzxJPOVv-mdfoJD4wGgoITfpei47V9etOfR5WX3gZa1oKnYa5Uv_w2JY_HDIGd04y-ISBL8O_aHmCcr"
+            "AUU72lCO6G3RnKH-IB7-K2vWjhwyYVEmYSEJYXw1q0hWqLvmlRYxUQbISNaM_yusaJjc5KsmJTpV9FC3",
+            "EKd_kvFhPjMILd3zMMNUMvrzlvJFKwKDfc0h7BskQFytYMsBb3S-pDMkKUuPRhqQ3FJG0OqZ86TAj82K"
         );
 
         public PayPalOptions(bool isSandbox, String clientId, String secret)

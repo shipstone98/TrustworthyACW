@@ -110,24 +110,8 @@ namespace CateringSystem.PayPal
                 throw new PayPalException(PayPalException._GetTokenError, this.IsSandbox);
             }
 
-            this.AccessToken = this.GetRootElement(response, "access_token");
+            this.AccessToken = PayPalClient.GetRootElement(response, "access_token");
             return this.AccessToken ?? throw new PayPalException(PayPalException._GetTokenError, this.IsSandbox);
-        }
-
-        private String GetRootElement(String jsonString, String name)
-        {
-            using (JsonDocument document = JsonDocument.Parse(jsonString))
-            {
-                foreach (JsonProperty property in document.RootElement.EnumerateObject())
-                {
-                    if (property.NameEquals(name))
-                    {
-                        return property.Value.GetString();
-                    }
-                }
-            }
-
-            return null;
         }
 
         public async Task<PayPalOrder> OrderAsync(IEnumerable<CartItem> cartItems)
@@ -190,6 +174,22 @@ namespace CateringSystem.PayPal
             }
 
             catch (NullReferenceException) { }
+        }
+
+        private static String GetRootElement(String jsonString, String name)
+        {
+            using (JsonDocument document = JsonDocument.Parse(jsonString))
+            {
+                foreach (JsonProperty property in document.RootElement.EnumerateObject())
+                {
+                    if (property.NameEquals(name))
+                    {
+                        return property.Value.GetString();
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }
