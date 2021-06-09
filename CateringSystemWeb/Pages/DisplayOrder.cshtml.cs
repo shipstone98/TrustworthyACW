@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -15,13 +14,18 @@ namespace CateringSystemWeb.Pages
     {
         private readonly CateringContext _Context;
 
-        public PayPalOrder Order { get; private set; }
+        public int ItemCount { get; private set; }
+        public PayPalCapture Order { get; private set; }
+        public Decimal Total { get; private set; }
+        public IReadOnlyDictionary<int, Decimal> Totals { get; private set; }
 
         public DisplayOrderModel(CateringContext context) => this._Context = context;
 
         public async Task<IActionResult> OnGetAsync([FromQuery] String token, [FromQuery] String payerId)
         {
-            if ((this.Order = this._Context.GetOrder(token)) is null)
+            PayPalOrder order = this._Context.GetOrder(token);
+
+            if (order is null)
             {
                 return this.NotFound();
             }
@@ -29,8 +33,21 @@ namespace CateringSystemWeb.Pages
             using (PayPalClient client = new PayPalClient(PayPalOptions.Default))
             {
                 await client.GetAccessTokenAsync();
-                PayPalCapture capture = await client.CaptureOrderAsync(this.Order);
+                this.Order = await client.CaptureOrderAsync(order);
             }
+
+            this.Total = this.ItemCount = 0;
+            Dictionary<int, Decimal> totals = new Dictionary<int, Decimal>();
+
+            foreach (CartItem item in this.Order.Unit.Items)
+            {
+                ++ this.ItemCount;
+                Decimal total = item.Product.Price * item.Quantity;
+                totals.Add(item.ProductId, total);
+                this.Total += total;
+            }
+
+            this.Totals = totals;
 
             return this.Page();
         }

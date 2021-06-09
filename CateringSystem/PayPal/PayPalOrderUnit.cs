@@ -1,20 +1,26 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Text;
 using System.Text.Json;
 
-namespace CateringSystem.PayPal.Internals
+namespace CateringSystem.PayPal
 {
-    internal class InternalOrder
+    public class PayPalOrderUnit
     {
-        private readonly InternalOrderIntent _Intent;
-        private readonly IEnumerable<CartItem> _Items;
+        [Key]
+        public int ID { get; set; }
 
-        internal InternalOrder(InternalOrderIntent intent, IEnumerable<CartItem> items)
+        public PayPalOrderIntent Intent { get; set; }
+        public virtual ICollection<CartItem> Items { get; set; }
+
+        public PayPalOrderUnit() { }
+
+        internal PayPalOrderUnit(PayPalOrderIntent intent, IEnumerable<CartItem> items)
         {
-            this._Intent = intent;
-            this._Items = items;
+            this.Intent = intent;
+            this.Items = new List<CartItem>(items);
         }
 
         internal String Serialize() => this.Serialize(Encoding.Default);
@@ -28,13 +34,13 @@ namespace CateringSystem.PayPal.Internals
                     Decimal total = 0;
 
                     writer.WriteStartObject();
-                        writer.WriteString("intent", this._Intent.ToString().ToUpper());
+                        writer.WriteString("intent", this.Intent.ToString().ToUpper());
                         
                         writer.WriteStartArray("purchase_units");
                             writer.WriteStartObject();
                                 writer.WriteStartArray("items");
 
-                                foreach (CartItem item in this._Items)
+                                foreach (CartItem item in this.Items)
                                 {
                                     total += item.Quantity * item.Product.Price;
                                     writer.WriteStartObject();

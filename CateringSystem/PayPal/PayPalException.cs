@@ -7,7 +7,7 @@ namespace CateringSystem.PayPal
     {
         internal const int _GetTokenError = 1000;
         internal const int _OrderCreationError = 1001;
-        internal const int _CaptureCreationError = 1001;
+        internal const int _CaptureCreationError = 1002;
 
         private static readonly IReadOnlyDictionary<int, String> _ErrorMessages;
 

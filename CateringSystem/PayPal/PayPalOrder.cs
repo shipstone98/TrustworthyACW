@@ -4,8 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Json;
 
-using CateringSystem.PayPal.Internals;
-
 namespace CateringSystem.PayPal
 {
     public class PayPalOrder
@@ -15,20 +13,24 @@ namespace CateringSystem.PayPal
         [Key]
         public String ID { get; set; }
         
-        public virtual ICollection<InternalOrderLink> Links { get; set; }
+        public virtual ICollection<PayPalOrderLink> Links { get; set; }
+
+        public virtual PayPalOrderUnit Unit { get; set; }
 
         public PayPalOrder() { }
 
         private PayPalOrder(String id)
         {
-            this.Links = new List<InternalOrderLink>();
+            this.Links = new List<PayPalOrderLink>();
             this.ID = id;
         }
 
         private protected PayPalOrder(PayPalOrder order)
         {
-            this.Links = new List<InternalOrderLink>(order.Links);
+            this.ApproveLink = order.ApproveLink;
+            this.Links = new List<PayPalOrderLink>(order.Links);
             this.ID = order.ID;
+            this.Unit = order.Unit;
         }
 
         internal static PayPalOrder Deserialize(String jsonString) => PayPalOrder.Deserialize(jsonString, Encoding.Default);
@@ -158,7 +160,7 @@ namespace CateringSystem.PayPal
                                     throw new FormatException();
                                 }
 
-                                order.Links.Add(new InternalOrderLink(href, rel, method.Value));
+                                order.Links.Add(new PayPalOrderLink(href, rel, method.Value));
                             }
                         }
                     }

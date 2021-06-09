@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace CateringSystem.PayPal.Internals
+namespace CateringSystem.PayPal
 {
-    public class InternalOrderLink
+    public class PayPalOrderLink
     {
         public String HyperTextReference { get; set; }
 
@@ -13,9 +13,9 @@ namespace CateringSystem.PayPal.Internals
         public HttpMethodType Method { get; set; }
         public String Relationship { get; set; }
 
-        public InternalOrderLink() { }
+        public PayPalOrderLink() { }
 
-        internal InternalOrderLink(String href, String rel, HttpMethodType method)
+        internal PayPalOrderLink(String href, String rel, HttpMethodType method)
         {
             this.HyperTextReference = href;
             this.Method = method;

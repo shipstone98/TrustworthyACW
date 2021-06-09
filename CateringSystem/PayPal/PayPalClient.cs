@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using CateringSystem.Logging;
-using CateringSystem.PayPal.Internals;
 
 namespace CateringSystem.PayPal
 {
@@ -74,7 +73,9 @@ namespace CateringSystem.PayPal
                 throw new PayPalException(PayPalException._CaptureCreationError, this.IsSandbox);
             }
 
-            return PayPalCapture.Deserialize(await responseMessage.Content.ReadAsStringAsync());
+            PayPalCapture capture = PayPalCapture.Deserialize(await responseMessage.Content.ReadAsStringAsync());
+            capture.Unit = order.Unit;
+            return capture;
         }
 
         private void CheckState(bool requireAccessToken)
@@ -172,9 +173,9 @@ namespace CateringSystem.PayPal
             }
 
             this.CheckState(true);
-            InternalOrder order = new InternalOrder(InternalOrderIntent.Capture, cartItems);
+            PayPalOrderUnit orderUnit = new PayPalOrderUnit(PayPalOrderIntent.Capture, cartItems);
             String orderJson = null;
-            Thread serializeThread = new Thread(() => orderJson = order.Serialize());
+            Thread serializeThread = new Thread(() => orderJson = orderUnit.Serialize());
             serializeThread.Start();
 
             HttpRequestMessage requestMessage = new HttpRequestMessage(
@@ -197,7 +198,9 @@ namespace CateringSystem.PayPal
                 throw new PayPalException(PayPalException._OrderCreationError, this.IsSandbox);
             }
 
-            return PayPalOrder.Deserialize(response);
+            PayPalOrder order = PayPalOrder.Deserialize(response);
+            order.Unit = orderUnit;
+            return order;
         }
 
         private void TryLog(String request, HttpStatusCode status, int bytes)

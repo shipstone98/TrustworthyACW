@@ -1,5 +1,5 @@
 ﻿@page
-@using CateringSystem.PayPal
+@using CateringSystem
 
 @model DisplayOrderModel
 @{
@@ -8,16 +8,36 @@
 
 <div class="text-center">
     <h1 class="display-4">Order Details</h1>
-    <p>Below are the details of your order.</p>
+    <p>Below are the details of your order (ID: @this.Model.Order.ID).</p>
 </div>
 
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">
-            Order ID
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Order.ID)
-        </dd>
-    </dl>
-</div>
+<table class="table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th></th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (CartItem cartItem in this.Model.Order.Unit.Items)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(model => cartItem.Product.Name)</td>
+                    <td>@Html.DisplayFor(model => cartItem.Product.Description)</td>
+                    <td><img src="@cartItem.Product.ImageUri" width="100" height="85" /></td>
+                    <td>@Html.DisplayFor(model => cartItem.Product.Price)</td>
+                    <td>@Html.DisplayFor(model => cartItem.Quantity)</td>
+                    <td>£@this.Model.Totals[cartItem.ProductId]</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</table>
+
+<p>Total paid: £@this.Model.Total</p>
