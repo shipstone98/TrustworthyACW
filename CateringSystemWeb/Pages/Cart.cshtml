@@ -51,6 +51,6 @@
     <p>Total price to pay: £@this.Model.Total</p>
 
     <form method="post">
-        <button type="submit" asp-page="Checkout" asp-route-cartId="@this.Model.Cart.ID">Checkout</button>
+        <button type="submit" asp-page="Checkout" asp-route-cartId="@this.Model.Cart.ID" class="btn btn-primary">Checkout</button>
     </form>
 }
