@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CateringSystemWeb.Migrations
 {
     [DbContext(typeof(CateringContext))]
-    [Migration("20210609111354_InitialCreate")]
+    [Migration("20210609114813_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

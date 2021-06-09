@@ -21,7 +21,12 @@ namespace CateringSystemWeb
         {
             services.AddDbContext<CateringContext>(options => 
                 options.UseLazyLoadingProxies().
+
+#if DEBUG
                 UseSqlServer(this.Configuration.GetConnectionString("Sandbox")
+#else
+                UseSqlServer(this.Configuration.GetConnectionString("Azure")
+#endif
             ));
 
             services.AddDistributedMemoryCache();
