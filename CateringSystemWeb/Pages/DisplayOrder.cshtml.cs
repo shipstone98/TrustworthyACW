@@ -19,11 +19,17 @@ namespace CateringSystemWeb.Pages
 
         public DisplayOrderModel(CateringContext context) => this._Context = context;
 
-        public IActionResult OnGet([FromQuery] String token, [FromQuery] String payerId)
+        public async Task<IActionResult> OnGetAsync([FromQuery] String token, [FromQuery] String payerId)
         {
             if ((this.Order = this._Context.GetOrder(token)) is null)
             {
                 return this.NotFound();
+            }
+
+            using (PayPalClient client = new PayPalClient(PayPalOptions.Default))
+            {
+                await client.GetAccessTokenAsync();
+                PayPalCapture capture = await client.CaptureOrderAsync(this.Order);
             }
 
             return this.Page();

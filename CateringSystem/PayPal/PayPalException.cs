@@ -7,6 +7,7 @@ namespace CateringSystem.PayPal
     {
         internal const int _GetTokenError = 1000;
         internal const int _OrderCreationError = 1001;
+        internal const int _CaptureCreationError = 1001;
 
         private static readonly IReadOnlyDictionary<int, String> _ErrorMessages;
 
@@ -15,7 +16,8 @@ namespace CateringSystem.PayPal
         static PayPalException() => PayPalException._ErrorMessages = new Dictionary<int, String>
         {
             { PayPalException._GetTokenError, "Error occurred when retrieving an access token" },
-            { PayPalException._OrderCreationError, "Error occurred when creating an order request" }
+            { PayPalException._OrderCreationError, "Error occurred when creating an order request" },
+            { PayPalException._CaptureCreationError, "Error occurred when capturing an authorized payment" }
         };
 
         internal PayPalException(int id, bool isSandbox) : base(PayPalException._ErrorMessages[id]) => this.IsSandbox = isSandbox;

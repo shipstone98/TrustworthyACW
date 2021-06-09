@@ -20,10 +20,13 @@ namespace CateringSystem.PayPal
         private bool _IsDisposed;
 
         public String AccessToken { get; private set; }
+        public Encoding Encoding { get; }
         public bool IsSandbox { get; }
         public ILogger Logger { get; set; }
 
-        public PayPalClient(PayPalOptions options)
+        public PayPalClient(PayPalOptions options) : this(options, null) { }
+
+        public PayPalClient(PayPalOptions options, Encoding encoding)
         {
             if (options is null)
             {
@@ -39,7 +42,39 @@ namespace CateringSystem.PayPal
             );
 
             this._Client = new HttpClient();
+            this.Encoding = encoding ?? Encoding.Default;
             this.IsSandbox = options.IsSandbox;
+        }
+
+        public async Task<PayPalCapture> CaptureOrderAsync(PayPalOrder order)
+        {
+            this.CheckState(true);
+
+            if (order is null)
+            {
+                throw new ArgumentNullException(nameof (order));
+            }
+
+            if (order.ID is null)
+            {
+                throw new ArgumentException(nameof (order) + " has no valid ID.");
+            }
+
+            HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post,
+                this.IsSandbox ? $"https://api-m.sandbox.paypal.com/v2/checkout/orders/{order.ID}/capture" :
+                throw new NotImplementedException()
+            );
+
+            requestMessage.Headers.Add("Authorization", "Bearer " + this.AccessToken);
+            requestMessage.Content = new StringContent(String.Empty, this.Encoding, "application/json");
+            HttpResponseMessage responseMessage = await this._Client.SendAsync(requestMessage);
+
+            if (responseMessage.StatusCode != HttpStatusCode.Created)
+            {
+                throw new PayPalException(PayPalException._CaptureCreationError, this.IsSandbox);
+            }
+
+            return PayPalCapture.Deserialize(await responseMessage.Content.ReadAsStringAsync());
         }
 
         private void CheckState(bool requireAccessToken)
@@ -152,7 +187,7 @@ namespace CateringSystem.PayPal
 
             requestMessage.Headers.Add("Authorization", "Bearer " + this.AccessToken);
             serializeThread.Join();
-            requestMessage.Content = new StringContent(orderJson, Encoding.Default, "application/json");
+            requestMessage.Content = new StringContent(orderJson, this.Encoding, "application/json");
             HttpResponseMessage responseMessage = await this._Client.SendAsync(requestMessage);
             String response = await responseMessage.Content.ReadAsStringAsync();
             this.TryLog(await requestMessage.Content.ReadAsStringAsync(), responseMessage.StatusCode, response.Length);

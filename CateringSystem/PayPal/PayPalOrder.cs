@@ -61,7 +61,15 @@ namespace CateringSystem.PayPal
 
                         else if (property.NameEquals("status"))
                         {
-                            if (!property.Value.GetString().Equals("CREATED"))
+                            if (isCapture)
+                            {
+                                if (!property.Value.GetString().Equals("COMPLETED"))
+                                {
+                                    throw new FormatException();
+                                }
+                            }
+
+                            else if (!property.Value.GetString().Equals("CREATED"))
                             {
                                 throw new FormatException();
                             }
@@ -162,7 +170,7 @@ namespace CateringSystem.PayPal
                 throw new FormatException();
             }
 
-            if (order.ApproveLink is null)
+            if (!isCapture && order.ApproveLink is null)
             {
                 throw new FormatException();
             }
