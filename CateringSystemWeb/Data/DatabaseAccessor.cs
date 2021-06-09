@@ -44,7 +44,7 @@ namespace CateringSystemWeb.Data
                 throw new ArgumentNullException(nameof (context));
             }
 
-            Product product = context.Products.FirstOrDefault(p => p.ID == id);
+            Product product = context.Products.ToList().FirstOrDefault(p => p.ID == id);
             return product ?? throw new ArgumentException("The specified product ID could not be found.");
         }
     }

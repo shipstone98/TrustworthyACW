@@ -14,7 +14,7 @@ namespace CateringSystemWeb.Data
         private readonly HttpContext _HttpContext;
 
         public String ID { get; }
-        public IEnumerable<CartItem> Items => this._DbContext.CartItems.Where(item => item.CartId.Equals(this.ID));
+        public IEnumerable<CartItem> Items => this._DbContext.CartItems.ToList().Where(item => item.CartId.Equals(this.ID));
 
         public CartHandler(CateringContext dbContext, HttpContext httpContext)
         {
