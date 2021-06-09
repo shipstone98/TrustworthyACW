@@ -1,19 +1,25 @@
 using System;
-using System.Net.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace CateringSystem.PayPal.Internals
 {
-    internal class InternalOrderLink
+    public class InternalOrderLink
     {
-        internal readonly String _HyperTextReference;
-        internal readonly HttpMethod _Method;
-        internal readonly String _Relationship;
+        public String HyperTextReference { get; set; }
 
-        internal InternalOrderLink(String href, String rel, HttpMethod method)
+        [Key]
+        public int ID { get; set; }
+        
+        public HttpMethodType Method { get; set; }
+        public String Relationship { get; set; }
+
+        public InternalOrderLink() { }
+
+        internal InternalOrderLink(String href, String rel, HttpMethodType method)
         {
-            this._HyperTextReference = href;
-            this._Method = method;
-            this._Relationship = rel;
+            this.HyperTextReference = href;
+            this.Method = method;
+            this.Relationship = rel;
         }
     }
 }

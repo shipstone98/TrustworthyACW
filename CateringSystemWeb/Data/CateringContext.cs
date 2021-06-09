@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using CateringSystem;
+using CateringSystem.PayPal;
 
 namespace CateringSystemWeb.Data
 {
@@ -8,6 +9,7 @@ namespace CateringSystemWeb.Data
     {
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<PayPalOrder> Orders { get; set; }
         public DbSet<Product> Products { get; set; }
 
         public CateringContext() { }

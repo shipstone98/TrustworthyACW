@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Json;
 
@@ -10,20 +10,31 @@ namespace CateringSystem.PayPal
 {
     public class PayPalOrder
     {
-        internal readonly ICollection<InternalOrderLink> _Links;
+        public String ApproveLink { get; set; }
 
-        public String ApproveLink { get; private set; }
+        [Key]
         public String ID { get; set; }
+        
+        public virtual ICollection<InternalOrderLink> Links { get; set; }
+
+        public PayPalOrder() { }
 
         private PayPalOrder(String id)
         {
-            this._Links = new List<InternalOrderLink>();
+            this.Links = new List<InternalOrderLink>();
             this.ID = id;
         }
 
-        internal static PayPalOrder Deserialize(String jsonString) => PayPalOrder.Deserialize(jsonString, Encoding.Default);
+        private protected PayPalOrder(PayPalOrder order)
+        {
+            this.Links = new List<InternalOrderLink>(order.Links);
+            this.ID = order.ID;
+        }
 
-        internal static PayPalOrder Deserialize(String jsonString, Encoding encoding)
+        internal static PayPalOrder Deserialize(String jsonString) => PayPalOrder.Deserialize(jsonString, Encoding.Default);
+        internal static PayPalOrder Deserialize(String jsonString, Encoding encoding) => PayPalOrder.Deserialize(jsonString, encoding, false);
+
+        private protected static PayPalOrder Deserialize(String jsonString, Encoding encoding, bool isCapture)
         {
             PayPalOrder order = null;
 
@@ -41,6 +52,11 @@ namespace CateringSystem.PayPal
                             }
 
                             order = new PayPalOrder(property.Value.GetString());
+
+                            if (isCapture)
+                            {
+                                order = new PayPalCapture(order);
+                            }
                         }
 
                         else if (property.NameEquals("status"))
@@ -56,7 +72,7 @@ namespace CateringSystem.PayPal
                             foreach (JsonElement linkElement in property.Value.EnumerateArray())
                             {
                                 String href = null, rel = null;
-                                HttpMethod method = null;
+                                Nullable<HttpMethodType> method = null;
 
                                 foreach (JsonProperty linkProperty in linkElement.EnumerateObject())
                                 {
@@ -100,28 +116,28 @@ namespace CateringSystem.PayPal
                                         switch (str)
                                         {
                                         case "DELETE":
-                                            method = HttpMethod.Delete;
+                                            method = HttpMethodType.Delete;
                                             break;
                                         case "GET":
-                                            method = HttpMethod.Get;
+                                            method = HttpMethodType.Get;
                                             break;
                                         case "HEAD":
-                                            method = HttpMethod.Head;
+                                            method = HttpMethodType.Head;
                                             break;
                                         case "OPTIONS":
-                                            method = HttpMethod.Options;
+                                            method = HttpMethodType.Options;
                                             break;
                                         case "PATCH":
-                                            method = HttpMethod.Patch;
+                                            method = HttpMethodType.Patch;
                                             break;
                                         case "POST":
-                                            method = HttpMethod.Post;
+                                            method = HttpMethodType.Post;
                                             break;
                                         case "PUT":
-                                            method = HttpMethod.Put;
+                                            method = HttpMethodType.Put;
                                             break;
                                         case "TRACE":
-                                            method = HttpMethod.Trace;
+                                            method = HttpMethodType.Trace;
                                             break;
                                         default:
                                             throw new FormatException();
@@ -129,12 +145,12 @@ namespace CateringSystem.PayPal
                                     }
                                 }
 
-                                if (href is null || rel is null || method is null)
+                                if (href is null || rel is null || method is null || !method.HasValue)
                                 {
                                     throw new FormatException();
                                 }
 
-                                order._Links.Add(new InternalOrderLink(href, rel, method));
+                                order.Links.Add(new InternalOrderLink(href, rel, method.Value));
                             }
                         }
                     }

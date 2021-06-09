@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 
 using CateringSystem;
+using CateringSystem.PayPal;
 
 namespace CateringSystemWeb.Data
 {
@@ -18,6 +19,22 @@ namespace CateringSystemWeb.Data
 
             Category category = context.Categories.FirstOrDefault(c => c.ID == id);
             return category ?? throw new ArgumentException("The specified category ID could not be found.");
+        }
+
+        public static PayPalOrder GetOrder(this CateringContext context, String id)
+        {
+            if (context is null)
+            {
+                throw new ArgumentNullException(nameof (context));
+            }
+
+            if (id is null)
+            {
+                throw new ArgumentNullException(nameof (id));
+            }
+
+            PayPalOrder order = context.Orders.FirstOrDefault(p => p.ID.Equals(id));
+            return order ?? throw new ArgumentException("The specified order ID could not be found.");
         }
 
         public static Product GetProduct(this CateringContext context, int id)

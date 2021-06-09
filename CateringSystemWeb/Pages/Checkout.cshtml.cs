@@ -30,6 +30,8 @@ namespace CateringSystemWeb.Pages
             {
                 await client.GetAccessTokenAsync();
                 PayPalOrder order = await client.OrderAsync(cartItems);
+                await this._Context.Orders.AddAsync(order);
+                await this._Context.SaveChangesAsync();
                 return this.Redirect(order.ApproveLink);
             }
         }
