@@ -4,13 +4,17 @@ ASP.NET Core Razor Pages web app providing a catering bill system for the univer
 
 ## Setup
 
-In order to setup the database, you must ensure SQL Server LocalDB is installed. Then navigate to the CateringSystemWeb directory and enter the following into the Windows terminal.
+In order to build the application, you must ensure the .NET Core 5.0 SDK is installed. This can be downloaded here, https://dotnet.microsoft.com/download/dotnet/thank-you/sdk-5.0.301-windows-x64-installer.
 
-``` dotnet tool install --global dotnet-ef ```
+Alternatively, you may use the pre-built binaries. The .NET Core 5.0 runtime can be downloaded here, https://dotnet.microsoft.com/download/dotnet/5.0/runtime.
 
-``` dotnet tool update --global dotnet-ef ```
+In order to setup and use the database, you must ensure SQL Server LocalDB is installed. Then navigate to the CateringSystemWeb directory and enter the following into the Windows terminal.
 
-``` dotnet ef database update ```
+```bat
+dotnet tool install --global dotnet-ef 
+dotnet tool update --global dotnet-ef
+dotnet ef database update
+```
 
 You may then use the provided SQL queries to add seed data to the database; alternatively, you may populate the database yourself.
 
