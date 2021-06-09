@@ -7,7 +7,9 @@ ASP.NET Core Razor Pages web app providing a catering bill system for the univer
 In order to setup the database, you must ensure SQL Server LocalDB is installed. Then navigate to the CateringSystemWeb directory and enter the following into the Windows terminal.
 
 ``` dotnet tool install --global dotnet-ef ```
+
 ``` dotnet tool update --global dotnet-ef ```
+
 ``` dotnet ef database update ```
 
 You may then use the provided SQL queries to add seed data to the database; alternatively, you may populate the database yourself.
