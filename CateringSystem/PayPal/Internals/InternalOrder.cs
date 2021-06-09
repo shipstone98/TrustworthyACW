@@ -60,6 +60,10 @@ namespace CateringSystem.PayPal.Internals
                                 writer.WriteEndObject();
                             writer.WriteEndObject();
                         writer.WriteEndArray();
+                        writer.WriteStartObject("application_context");
+                            writer.WriteString("return_url", "https://localhost:5001/DisplayOrder");
+                            writer.WriteString("cancel_url", "https://localhost:5001/Index");
+                        writer.WriteEndObject();
                     writer.WriteEndObject();
                     writer.Flush();
 
